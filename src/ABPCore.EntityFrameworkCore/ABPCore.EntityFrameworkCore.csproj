@@ -15,20 +15,4 @@
   </None>
 </ItemGroup><ItemGroup>
   <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
-</ItemGroup><ItemGroup>
-  <Compile Update="BPDBConext.cs">
-    <DesignTime>True</DesignTime>
-    <AutoGen>True</AutoGen>
-    <DependentUpon>BPDBConext.tt</DependentUpon>
-  </Compile>
-  <Compile Update="EPlusDBConext.cs">
-    <DesignTime>True</DesignTime>
-    <AutoGen>True</AutoGen>
-    <DependentUpon>EPlusDBConext.tt</DependentUpon>
-  </Compile>
-  <Compile Update="ProjectManageDBConext.cs">
-    <DesignTime>True</DesignTime>
-    <AutoGen>True</AutoGen>
-    <DependentUpon>ProjectManageDBConext.tt</DependentUpon>
-  </Compile>
 </ItemGroup></Project>
