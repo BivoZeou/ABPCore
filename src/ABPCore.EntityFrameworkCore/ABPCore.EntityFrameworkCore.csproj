@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><Version>1.0.0.0</Version><TargetFramework>netcoreapp2.0</TargetFramework><AssetTargetFallback>$(AssetTargetFallback);portable-net45+win8+wp8+wpa81;</AssetTargetFallback><AssemblyName>ABPCore.EntityFrameworkCore</AssemblyName><OutputType>Library</OutputType><PackageId>ABPCore.EntityFrameworkCore</PackageId><GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute><GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute><GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute><GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles><AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects><GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType><RootNamespace>ABPCore</RootNamespace></PropertyGroup><ItemGroup><PackageReference Include="Abp.EntityFrameworkCore" Version="3.0.0" /><PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.0.0" /><PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.0.0" /><PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.Design" Version="1.1.2" /><PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.0"><PrivateAssets>All</PrivateAssets></PackageReference></ItemGroup><ItemGroup Condition=" '$(TargetFramework)' == 'net461' "><Reference Include="System" /><Reference Include="Microsoft.CSharp" /></ItemGroup><ItemGroup><DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" /></ItemGroup><ItemGroup>
+  <ProjectReference Include="..\ABPCore.Core\ABPCore.Core.csproj" />
+</ItemGroup><ItemGroup>
+  <None Update="ProjectManageDBConext.tt">
+    <LastGenOutput>ProjectManageDBConext.cs</LastGenOutput>
+    <Generator>TextTemplatingFileGenerator</Generator>
+  </None>
+  <None Update="EPlusDBConext.tt">
+    <LastGenOutput>EPlusDBConext.cs</LastGenOutput>
+    <Generator>TextTemplatingFileGenerator</Generator>
+  </None>
+  <None Update="BPDBConext.tt">
+    <Generator>TextTemplatingFileGenerator</Generator>
+    <LastGenOutput>BPDBConext.cs</LastGenOutput>
+  </None>
+</ItemGroup><ItemGroup>
+  <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+</ItemGroup><ItemGroup>
+  <Compile Update="BPDBConext.cs">
+    <DesignTime>True</DesignTime>
+    <AutoGen>True</AutoGen>
+    <DependentUpon>BPDBConext.tt</DependentUpon>
+  </Compile>
+  <Compile Update="EPlusDBConext.cs">
+    <DesignTime>True</DesignTime>
+    <AutoGen>True</AutoGen>
+    <DependentUpon>EPlusDBConext.tt</DependentUpon>
+  </Compile>
+  <Compile Update="ProjectManageDBConext.cs">
+    <DesignTime>True</DesignTime>
+    <AutoGen>True</AutoGen>
+    <DependentUpon>ProjectManageDBConext.tt</DependentUpon>
+  </Compile>
+</ItemGroup></Project>
