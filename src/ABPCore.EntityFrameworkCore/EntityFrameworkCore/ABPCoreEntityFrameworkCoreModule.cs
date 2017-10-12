@@ -1,11 +1,17 @@
 ﻿using System;
+using System.Data.Common;
 using Abp.Collections.Extensions;
+using Abp.Configuration.Startup;
 using Abp.Dependency;
+using Abp.Domain.Uow;
 using Abp.EntityFrameworkCore;
 using Abp.EntityFrameworkCore.Configuration;
+using Abp.EntityFrameworkCore.Uow;
 using Abp.Modules;
+using Abp.MultiTenancy;
 using Abp.Reflection;
 using Abp.Reflection.Extensions;
+using Abp.Runtime.Session;
 using ABPCore.Configuration;
 using ABPCore.Web;
 using Castle.Core.Logging;
@@ -31,28 +37,47 @@ namespace ABPCore.EntityFrameworkCore
 
         public override void PreInitialize()
         {
-            var configuration = AppConfigurations.Get(WebContentDirectoryFinder.CalculateContentRootFolder());
+            Configuration.ReplaceService<IConnectionStringResolver, CustomerDBConnectionStringResolver>(DependencyLifeStyle.Transient);
 
             Configuration.Modules.AbpEfCore().AddDbContext<BPDbContext>(options =>
             {
 
-                options.DbContextOptions.UseSqlServer(
-                    configuration.GetConnectionString(ABPCoreConsts.BPConnectionStringName));
-
+                if (options.ExistingConnection != null)
+                {
+                    options.DbContextOptions.UseSqlServer(options.ExistingConnection);
+                }
+                else
+                {
+                    options.DbContextOptions.UseSqlServer(options.ConnectionString);
+                }
             });
+
 
 
             Configuration.Modules.AbpEfCore().AddDbContext<EPlusDBConext>(options =>
             {
-                options.DbContextOptions.UseSqlServer(
-                    configuration.GetConnectionString(ABPCoreConsts.EECPlusConnectionStringName));
+                if (options.ExistingConnection != null)
+                {
+                    options.DbContextOptions.UseSqlServer(options.ExistingConnection);
+                }
+                else
+                {
+                    options.DbContextOptions.UseSqlServer(options.ConnectionString);
+                }
             });
 
 
             Configuration.Modules.AbpEfCore().AddDbContext<ProjectManageDbContext>(options =>
             {
-                options.DbContextOptions.UseSqlServer(
-                    configuration.GetConnectionString(ABPCoreConsts.PMConnectionStringName));
+                if (options.ExistingConnection != null)
+                {
+                    options.DbContextOptions.UseSqlServer(options.ExistingConnection);
+                }
+                else
+                {
+                    options.DbContextOptions.UseSqlServer(options.ConnectionString);
+                }
+
             });
 
             RegisterGenericRepositories();
@@ -86,5 +111,67 @@ namespace ABPCore.EntityFrameworkCore
                 }
             }
         }
+    }
+
+
+
+
+
+
+    /// <summary>
+    /// Implements <see cref="IDbPerTenantConnectionStringResolver"/> to dynamically resolve
+    /// connection string for a multi tenant application.
+    /// </summary>
+    public class CustomerDBConnectionStringResolver : DefaultConnectionStringResolver
+    {
+
+        public CustomerDBConnectionStringResolver(
+            IAbpStartupConfiguration configuration)
+            : base(configuration)
+        {
+
+        }
+
+        public override string GetNameOrConnectionString(ConnectionStringResolveArgs args)
+        {
+            var configuration = AppConfigurations.Get(WebContentDirectoryFinder.CalculateContentRootFolder());
+
+            switch (args["DbContextType"].ToString())
+            {
+                case "ABPCore.EPlusDBConext":
+                    return configuration.GetConnectionString(ABPCoreConsts.EECPlusConnectionStringName);
+                case "ABPCore.BPDbContext":
+                    return configuration.GetConnectionString(ABPCoreConsts.BPConnectionStringName);
+                case "ABPCore.ProjectManageDbContext":
+                    return configuration.GetConnectionString(ABPCoreConsts.PMConnectionStringName);
+            }
+
+            return string.Empty;
+        }
+
+        //public virtual string GetNameOrConnectionString(DbPerTenantConnectionStringResolveArgs args)
+        //{
+        //    if (args.TenantId == null)
+        //    {
+        //        //Requested for host
+        //        return base.GetNameOrConnectionString(args);
+        //    }
+
+        //    var tenantCacheItem = _tenantCache.Get(args.TenantId.Value);
+        //    if (tenantCacheItem.ConnectionString.IsNullOrEmpty())
+        //    {
+        //        //Tenant has not dedicated database
+        //        return base.GetNameOrConnectionString(args);
+        //    }
+
+        //    return tenantCacheItem.ConnectionString;
+        //}
+
+        //protected virtual int? GetCurrentTenantId()
+        //{
+        //    return _currentUnitOfWorkProvider.Current != null
+        //        ? _currentUnitOfWorkProvider.Current.GetTenantId()
+        //        : AbpSession.TenantId;
+        //}
     }
 }

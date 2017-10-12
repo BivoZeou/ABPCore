@@ -15,19 +15,28 @@ namespace ABPCore.BusinessPlan
 
         private readonly IExtendedRepository<BPEC_RetailItem> _BPEC_RetailItemRepository;
         private readonly IExtendedRepository<PM_DevelopRemark> _PM_DevelopRemarkRepository;
+        private readonly IRepository<PH_PhotoNote> _PH_PhotoNoteRepository;
         public BusinessPlanManager(
-            IExtendedRepository<BPEC_RetailItem> BPEC_RetailItemRepository, IExtendedRepository<PM_DevelopRemark> PM_DevelopRemarkRepository)
+            IExtendedRepository<BPEC_RetailItem> BPEC_RetailItemRepository, IExtendedRepository<PM_DevelopRemark> PM_DevelopRemarkRepository, IRepository<PH_PhotoNote> PH_PhotoNoteRepository)
         {
             _BPEC_RetailItemRepository = BPEC_RetailItemRepository;
             _PM_DevelopRemarkRepository = PM_DevelopRemarkRepository;
+            _PH_PhotoNoteRepository = PH_PhotoNoteRepository;
         }
 
 
         public async Task<List<BPEC_RetailItem>> GetAllBPItems()
         {
-            _PM_DevelopRemarkRepository.GetAllList();
+            var pmList = _PM_DevelopRemarkRepository.GetAllList();
 
-           return await _BPEC_RetailItemRepository.GetAllListAsync();
+            var notesList = _PH_PhotoNoteRepository.GetAllList();
+
+            var pmList2 = _PM_DevelopRemarkRepository.FirstOrDefault(o => o.Topic != string.Empty);
+
+            var pmList3 = _PM_DevelopRemarkRepository.FirstOrDefault(o => o.Content != string.Empty);
+
+
+            return await _BPEC_RetailItemRepository.GetAllListAsync();
         }
 
         public async Task InsertNewItem()

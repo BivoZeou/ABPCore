@@ -1,5 +1,6 @@
 ﻿using Abp.AspNetCore;
 using Abp.AspNetCore.Configuration;
+using Abp.Dependency;
 using Abp.Modules;
 using Abp.Reflection.Extensions;
 using ABPCore.Configuration;
@@ -24,7 +25,11 @@ namespace ABPCore.Web.Startup
 
         public override void PreInitialize()
         {
-            Configuration.DefaultNameOrConnectionString = _appConfiguration.GetConnectionString(ABPCoreConsts.ConnectionStringName);
+            Configuration.DefaultNameOrConnectionString = _appConfiguration.GetConnectionString(
+                ABPCoreConsts.BPConnectionStringName
+            );
+
+
 
             Configuration.Navigation.Providers.Add<ABPCoreNavigationProvider>();
 
@@ -32,6 +37,7 @@ namespace ABPCore.Web.Startup
                 .CreateControllersForAppServices(
                     typeof(ABPCoreApplicationModule).GetAssembly()
                 );
+
         }
 
         public override void Initialize()
